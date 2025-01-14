@@ -1,4 +1,4 @@
-select * from public.player_seasons ps limit 100
+select distinct season from public.player_seasons ps order by season desc
 
 
 create TYPE season_stats as (
@@ -28,10 +28,10 @@ create table players(
 	primary key (player_name, current_season)
 );
 
-
+--- playes table
 insert into players
-with yesterday as (select * from public.players ps where ps.current_season = 2002),
-	today as (select * from public.player_seasons ps where ps.season = 2003)
+with yesterday as (select * from public.players ps where ps.current_season = 2020),
+	today as (select * from public.player_seasons ps where ps.season = 2021)
 	select
 		coalesce(t.player_name, y.player_name) as player_name,
 		coalesce(t.height, y.height) as height,
@@ -56,16 +56,3 @@ with yesterday as (select * from public.players ps where ps.current_season = 200
 		coalesce(t.season, y.current_season + 1) as current_season,
 		case when t.season is not null then true else false end as is_active
 		from yesterday as y full outer join today as t on y.player_name = t.player_name;
-		
-	
-select player_name, "scoring_class", is_active from players
-where current_season =2001
-
-
-create table players_scd (
-	player_name text,
-	scoring_class scoring_class,
-	is_active BOOLEAN,
-	current_season INTEGER,
-	primary key(player_name, current_season)
-)
